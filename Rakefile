@@ -30,7 +30,7 @@ namespace :provision do
     Terraform.apply(
         directory: configuration_directory,
         vars: terraform_vars_for(
-            deployment_identifier: deployment_identifier))
+          deployment_identifier: deployment_identifier))
   end
 end
 
@@ -66,6 +66,9 @@ end
 def terraform_vars_for(opts)
   {
       region: 'eu-west-2',
-      deployment_identifier: opts[:deployment_identifier]
+      deployment_identifier: opts[:deployment_identifier],
+
+      bucket_name_prefix: 'infrastructure-events',
+      topic_name_prefix: 'infrastructure-events'
   }
 end
