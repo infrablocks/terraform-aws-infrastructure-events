@@ -1,40 +1,18 @@
-Terraform AWS Base Networking
-=============================
+Terraform AWS Infrastructure Events
+===================================
 
-A Terraform module for building a base network in AWS.
-
-The network consists of:
-* Public and private subnets for each supplied availability zone
-* A NAT gateway for outbound Internet connectivity
-* Routes from the public subnets to the Internet gateway
-* Routes from the private subnets to the NAT
-* A bastion host configured with the supplied SSH key
-* A security group for the bastion limited to the supplied IP ranges
-* A DNS entry in the supplied public zone for the bastion
-* Standard tags for all resources
+A Terraform module allowing other modules to publish events about 
+their activities.
 
 Usage
 -----
 
-To use the module, include something like the following in your terraform configuration:
+To use the module, include something like the following in your terraform 
+configuration:
 
 ```hcl-terraform
-module "base-network" {
-  source = "git@github.com:tobyclemson/terraform-aws-base-networking.git//src"
-  
-  vpc_cidr = "10.0.0.0/16"
-  region = "eu-west-2"
-  availability_zones = "eu-west-2a,eu-west-2b"
-  
-  component = "important-component"
-  deployment_identifier = "production"
-  
-  bastion_ami = "ami-bb373ddf"
-  bastion_ssh_public_key_path = "~/.ssh/id_rsa.pub"
-  bastion_ssh_allow_cidrs = "100.10.10.0/24,200.20.0.0/16"
-  
-  domain_name = "example.com"
-  public_zone_id = "Z1WA3EVJBXSQ2V"
+module "infrastructure-events" {
+  ...
 }
 ```
 
@@ -45,32 +23,12 @@ Executing `terraform get` will fetch the module.
 
 | Name                        | Description                                       | Default | Required |
 |-----------------------------|---------------------------------------------------|:-------:|:--------:|
-| vpc_cidr                    | The CIDR to use for the VPC                       | -       | yes      |
-| region                      | The region into which to deploy the VPC           | -       | yes      |
-| availability_zones          | The availability zones for which to add subnets   | -       | yes      |
-| component                   | The component this network will contain           | -       | yes      |
-| deployment_identifier       | An identifier for this instantiation              | -       | yes      |
-| bastion_ami                 | The AMI to use for the bastion instance           | -       | yes      |
-| bastion_ssh_public_key_path | The path to the public key to use for the bastion | -       | yes      |
-| bastion_ssh_allow_cidrs     | The CIDRs from which the bastion is reachable     | -       | yes      |
-| domain_name                 | The domain name of the supplied Route 53 zone     | -       | yes      |
-| public_zone_id              | The ID of the public Route 53 zone                | -       | yes      |
 
 
 ### Outputs
 
 | Name                         | Description                                          |
 |------------------------------|------------------------------------------------------|
-| vpc_id                       | The ID of the created VPC                            |
-| vpc_cidr                     | The CIDR of the created VPC                          |
-| availability_zones           | The availability zones in which subnets were created |
-| number_of_availability_zones | The number of populated availability zones available |
-| public_subnet_ids            | The IDs of the public subnets                        |
-| public_subnet_cidrs          | The CIDRs of the public subnets                      |
-| private_subnet_ids           | The IDs of the private subnets                       |
-| private_subnet_cidrs         | The CIDRs of the private subnets                     |
-| bastion_public_ip            | The EIP attached to the bastion                      |
-| nat_public_ip                | The EIP attached to the NAT                          |
 
 
 Development
@@ -78,8 +36,8 @@ Development
 
 ### Machine Requirements
 
-In order for the build to run correctly, a few tools will need to be installed on your
-development machine:
+In order for the build to run correctly, a few tools will need to be installed 
+on your development machine:
 
 * Ruby (2.3.1)
 * Bundler
@@ -128,8 +86,8 @@ direnv allow <repository-directory>
 
 ### Running the build
 
-To provision module infrastructure, run tests and then destroy that infrastructure,
-execute:
+To provision module infrastructure, run tests and then destroy that 
+infrastructure, execute:
 
 ```bash
 ./go
@@ -158,12 +116,15 @@ ssh-keygen -t rsa -b 4096 -C integration-test@example.com -N '' -f config/secret
 Contributing
 ------------
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/tobyclemson/terraform-aws-base-networking. 
-This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to 
-the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at 
+https://github.com/tobyclemson/terraform-aws-infrastructure-events. This project 
+is intended to be a safe, welcoming space for collaboration, and contributors 
+are expected to adhere to the 
+[Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 License
 -------
 
-The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+The library is available as open source under the terms of the 
+[MIT License](http://opensource.org/licenses/MIT).
