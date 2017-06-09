@@ -52,4 +52,11 @@ describe 'S3 Bucket' do
           .to(contain_exactly('s3:ObjectCreated:*', 's3:ObjectRemoved:*'))
     end
   end
+
+  context 'outputs' do
+    it 'outputs the infrastructure events bucket name' do
+      expect(Terraform.output(name: 'infrastructure_events_bucket'))
+          .to(eq(subject.name))
+    end
+  end
 end

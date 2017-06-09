@@ -27,17 +27,26 @@ describe 'Topic' do
     end
   end
 
-  it { should_not be_nil }
+  context 'topic' do
+    it { should_not be_nil }
 
-  it 'allows publishing from the infrastructure events bucket' do
-    policy = JSON.parse(subject.attributes['Policy'])
-    statement = policy['Statement'][0]
+    it 'allows publishing from the infrastructure events bucket' do
+      policy = JSON.parse(subject.attributes['Policy'])
+      statement = policy['Statement'][0]
 
-    expect(statement['Effect']).to eq('Allow')
-    expect(statement['Principal']['Service']).to eq('s3.amazonaws.com')
-    expect(statement['Action']).to eq('SNS:Publish')
-    expect(statement['Resource']).to eq(subject.attributes['TopicArn'])
-    expect(statement['Condition']['ArnLike']['aws:SourceArn'])
-        .to(eq("arn:aws:s3:::#{bucket.name}"))
+      expect(statement['Effect']).to eq('Allow')
+      expect(statement['Principal']['Service']).to eq('s3.amazonaws.com')
+      expect(statement['Action']).to eq('SNS:Publish')
+      expect(statement['Resource']).to eq(subject.attributes['TopicArn'])
+      expect(statement['Condition']['ArnLike']['aws:SourceArn'])
+          .to(eq("arn:aws:s3:::#{bucket.name}"))
+    end
+  end
+
+  context 'outputs' do
+    it 'outputs the infrastructure events topic ARN' do
+      expect(Terraform.output(name: 'infrastructure_events_topic_arn'))
+          .to(eq(subject.attributes['TopicArn']))
+    end
   end
 end
