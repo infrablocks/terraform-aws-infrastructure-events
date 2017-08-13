@@ -1,6 +1,8 @@
 Terraform AWS Infrastructure Events
 ===================================
 
+[![CircleCI](https://circleci.com/gh/infrablocks/terraform-aws-infrastructure-events.svg?style=svg)](https://circleci.com/gh/infrablocks/terraform-aws-infrastructure-events)
+
 A Terraform module allowing other modules to publish events about 
 their activities.
 
