@@ -1,12 +1,10 @@
 require 'spec_helper'
 
 describe 'S3 Bucket' do
-  include_context :terraform
-
-  let(:bucket_name_prefix) {RSpec.configuration.bucket_name_prefix}
-  let(:topic_name_prefix) {RSpec.configuration.topic_name_prefix}
-  let(:region) {RSpec.configuration.region}
-  let(:deployment_identifier) {RSpec.configuration.deployment_identifier}
+  let(:bucket_name_prefix) { vars.bucket_name_prefix }
+  let(:topic_name_prefix) { vars.topic_name_prefix }
+  let(:region) { vars.region }
+  let(:deployment_identifier) { vars.deployment_identifier }
 
   subject {
     s3_bucket("#{bucket_name_prefix}-#{region}-#{deployment_identifier}")
@@ -55,7 +53,7 @@ describe 'S3 Bucket' do
 
   context 'outputs' do
     it 'outputs the infrastructure events bucket name' do
-      expect(Terraform.output(name: 'infrastructure_events_bucket'))
+      expect(output_with_name('infrastructure_events_bucket'))
           .to(eq(subject.name))
     end
   end

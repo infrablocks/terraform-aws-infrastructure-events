@@ -3,12 +3,10 @@ require 'json'
 require 'pp'
 
 describe 'Topic' do
-  include_context :terraform
-
-  let(:topic_name_prefix) {RSpec.configuration.topic_name_prefix}
-  let(:bucket_name_prefix) {RSpec.configuration.bucket_name_prefix}
-  let(:region) {RSpec.configuration.region}
-  let(:deployment_identifier) {RSpec.configuration.deployment_identifier}
+  let(:topic_name_prefix) { vars.topic_name_prefix }
+  let(:bucket_name_prefix) { vars.bucket_name_prefix }
+  let(:region) { vars.region }
+  let(:deployment_identifier) { vars.deployment_identifier }
 
   let(:topics) do
     sns_client.list_topics.data[:topics].map do |topic|
@@ -45,7 +43,7 @@ describe 'Topic' do
 
   context 'outputs' do
     it 'outputs the infrastructure events topic ARN' do
-      expect(Terraform.output(name: 'infrastructure_events_topic_arn'))
+      expect(output_with_name('infrastructure_events_topic_arn'))
           .to(eq(subject.attributes['TopicArn']))
     end
   end

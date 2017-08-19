@@ -2,13 +2,15 @@ require 'rspec/core/rake_task'
 require 'securerandom'
 require 'git'
 require 'semantic'
+require 'rake_terraform'
 
-require_relative 'lib/public_ip'
-require_relative 'lib/terraform'
+require_relative 'lib/configuration'
 
-DEPLOYMENT_IDENTIFIER = SecureRandom.hex[0, 8]
+configuration = Configuration.new
 
-Terraform::Tasks.install('0.8.6')
+RakeTerraform.define_installation_tasks(
+    path: File.join(Dir.pwd, 'vendor', 'terraform'),
+    version: '0.9.8')
 
 task :default => 'test:integration'
 
@@ -18,36 +20,19 @@ namespace :test do
   end
 end
 
-namespace :provision do
-  desc 'Provisions module in AWS'
-  task :aws, [:deployment_identifier] => ['terraform:ensure'] do |_, args|
-    deployment_identifier = args.deployment_identifier || DEPLOYMENT_IDENTIFIER
-    configuration_directory = Paths.from_project_root_directory('src')
+RakeTerraform.define_command_tasks do |t|
+  t.argument_names = [:deployment_identifier]
 
-    puts "Provisioning with deployment identifier: #{deployment_identifier}"
+  t.configuration_name = 'infrastructure events module'
+  t.source_directory = configuration.source_directory
+  t.work_directory = configuration.work_directory
 
-    Terraform.clean
-    Terraform.apply(
-        directory: configuration_directory,
-        vars: terraform_vars_for(
-          deployment_identifier: deployment_identifier))
-  end
-end
+  t.state_file = configuration.state_file
 
-namespace :destroy do
-  desc 'Destroys module in AWS'
-  task :aws, [:deployment_identifier] => ['terraform:ensure'] do |_, args|
-    deployment_identifier = args.deployment_identifier || DEPLOYMENT_IDENTIFIER
-    configuration_directory = Paths.from_project_root_directory('src')
-
-    puts "Destroying with deployment identifier: #{deployment_identifier}"
-
-    Terraform.clean
-    Terraform.destroy(
-        directory: configuration_directory,
-        force: true,
-        vars: terraform_vars_for(
-            deployment_identifier: deployment_identifier))
+  t.vars = lambda do |args|
+    configuration
+        .vars_for(args)
+        .to_h
   end
 end
 
@@ -61,14 +46,4 @@ namespace :release do
     repo.add_tag(next_tag.to_s)
     repo.push('origin', 'master', tags: true)
   end
-end
-
-def terraform_vars_for(opts)
-  {
-      region: 'eu-west-2',
-      deployment_identifier: opts[:deployment_identifier],
-
-      bucket_name_prefix: 'infrastructure-events',
-      topic_name_prefix: 'infrastructure-events'
-  }
 end
