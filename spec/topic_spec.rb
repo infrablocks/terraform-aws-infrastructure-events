@@ -43,7 +43,7 @@ describe 'Topic' do
 
   context 'outputs' do
     it 'outputs the infrastructure events topic ARN' do
-      expect(output_with_name('infrastructure_events_topic_arn'))
+      expect(output_for(:harness, 'infrastructure_events_topic_arn'))
           .to(eq(subject.attributes['TopicArn']))
     end
   end

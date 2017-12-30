@@ -12,6 +12,8 @@ resource "aws_s3_bucket" "infrastructure_events" {
 resource "aws_s3_bucket_notification" "vpc_lifecycle_notifications" {
   bucket = "${aws_s3_bucket.infrastructure_events.bucket}"
 
+  depends_on = ["aws_sns_topic_policy.infrastructure_events"]
+
   topic {
     topic_arn = "${aws_sns_topic.infrastructure_events.arn}"
 

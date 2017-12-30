@@ -14,23 +14,35 @@ configuration:
 
 ```hcl-terraform
 module "infrastructure-events" {
-  ...
+  source = "infrablocks/infrastructure-events/aws"
+  version = "0.1.8"
+  
+  region = "eu-west-2"
+  
+  deployment_identifier = "1a32db46"
+  
+  bucket_name_prefix = "infra-events-bucket"
+  topic_name_prefix = "infra-events-topic"
 }
 ```
-
-Executing `terraform get` will fetch the module.
 
 
 ### Inputs
 
-| Name                        | Description                                       | Default | Required |
-|-----------------------------|---------------------------------------------------|:-------:|:--------:|
+| Name                        | Description                                          | Default | Required |
+|-----------------------------|------------------------------------------------------|:-------:|:--------:|
+| region                      | The region into which to deploy the bucket and topic | -       | yes      |
+| deployment_identifier       | An identifier for this instantiation                 | -       | yes      |
+| bucket_name_prefix          | The prefix to use for the bucket name                | -       | yes      |
+| topic_name_prefix           | The prefix to use for the topic name                 | -       | yes      |
 
 
 ### Outputs
 
-| Name                         | Description                                          |
-|------------------------------|------------------------------------------------------|
+| Name                            | Description            |
+|---------------------------------|------------------------|
+| infrastructure_events_bucket    | The name of the bucket |
+| infrastructure_events_topic_arn | The ARN of the topic   |
 
 
 Development
@@ -98,21 +110,13 @@ infrastructure, execute:
 To provision the module contents:
 
 ```bash
-./go provision:aws[<deployment_identifier>]
+./go deployment:harness:provision[<deployment_identifier>]
 ```
 
 To destroy the module contents:
 
 ```bash
-./go destroy:aws[<deployment_identifier>]
-```
-
-### Common Tasks
-
-To generate an SSH key pair:
-
-```
-ssh-keygen -t rsa -b 4096 -C integration-test@example.com -N '' -f config/secrets/keys/bastion/ssh
+./go deployment:harness:destroy[<deployment_identifier>]
 ```
 
 Contributing

@@ -1,5 +1,5 @@
 module "infrastructure_events" {
-  source = "../../../src"
+  source = "../../../../"
 
   region = "${var.region}"
   deployment_identifier = "${var.deployment_identifier}"
