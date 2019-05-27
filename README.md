@@ -119,11 +119,36 @@ To destroy the module contents:
 ./go deployment:harness:destroy[<deployment_identifier>]
 ```
 
+### Common Tasks
+
+#### Managing CircleCI keys
+
+To encrypt a GPG key for use by CircleCI:
+
+```bash
+openssl aes-256-cbc \
+  -e \
+  -md sha1 \
+  -in ./config/secrets/ci/gpg.private \
+  -out ./.circleci/gpg.private.enc \
+  -k "<passphrase>"
+```
+
+To check decryption is working correctly:
+
+```bash
+openssl aes-256-cbc \
+  -d \
+  -md sha1 \
+  -in ./.circleci/gpg.private.enc \
+  -k "<passphrase>"
+```
+
 Contributing
 ------------
 
 Bug reports and pull requests are welcome on GitHub at 
-https://github.com/tobyclemson/terraform-aws-infrastructure-events. This project 
+https://github.com/infrablocks/terraform-aws-infrastructure-events. This project 
 is intended to be a safe, welcoming space for collaboration, and contributors 
 are expected to adhere to the 
 [Contributor Covenant](http://contributor-covenant.org) code of conduct.
