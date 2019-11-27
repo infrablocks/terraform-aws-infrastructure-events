@@ -35,7 +35,7 @@ describe 'S3 Bucket' do
           include({key: 'Name', value: subject.name}))
       expect(tags[:tag_set]).to(
           include({key: 'DeploymentIdentifier',
-                   value: deployment_identifier}))
+                   value: deployment_identifier.to_s}))
     end
   end
 
