@@ -29,6 +29,6 @@ resource "aws_sns_topic" "infrastructure_events" {
 }
 
 resource "aws_sns_topic_policy" "infrastructure_events" {
-  arn = "${aws_sns_topic.infrastructure_events.arn}"
-  policy = "${data.aws_iam_policy_document.infrastructure_events_topic.json}"
+  arn = aws_sns_topic.infrastructure_events.arn
+  policy = data.aws_iam_policy_document.infrastructure_events_topic.json
 }
