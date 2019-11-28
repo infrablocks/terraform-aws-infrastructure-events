@@ -5,6 +5,9 @@ describe 'S3 Bucket' do
   let(:topic_name_prefix) { vars.topic_name_prefix }
   let(:region) { vars.region }
   let(:deployment_identifier) { vars.deployment_identifier }
+  let(:trusted_principals) { vars.trusted_principals }
+
+  let(:bucket_arn) { output_for(:harness, 'infrastructure_events_bucket_arn') }
 
   subject {
     s3_bucket("#{bucket_name_prefix}-#{region}-#{deployment_identifier}")
@@ -24,7 +27,7 @@ describe 'S3 Bucket' do
   end
 
   context 'bucket' do
-    it {should exist}
+    it { should exist }
 
     it 'has tags' do
       tags = s3_client.get_bucket_tagging({bucket: subject.name}).to_h
@@ -35,7 +38,41 @@ describe 'S3 Bucket' do
           include({key: 'Name', value: subject.name}))
       expect(tags[:tag_set]).to(
           include({key: 'DeploymentIdentifier',
-                   value: deployment_identifier.to_s}))
+              value: deployment_identifier.to_s}))
+    end
+
+    it 'allows all access from the owning account' do
+      policy_document = JSON.parse(subject.policy.policy.read)
+      owning_account_statement =
+          policy_document["Statement"].find do |statement|
+            statement["Sid"] == "AllowEverythingForOwningAccount"
+          end
+
+      expect(owning_account_statement["Effect"]).to(eq("Allow"))
+      expect(owning_account_statement["Resource"]).to(eq("#{bucket_arn}/*"))
+      expect(owning_account_statement["Action"]).to(eq("s3:*"))
+      expect(owning_account_statement["Principal"]["AWS"])
+          .to(eq("arn:aws:iam::#{account.account}:root"))
+    end
+
+    it 'allows access to get and put objects from all trusted accounts' do
+      policy_document = JSON.parse(subject.policy.policy.read)
+      trusted_principal_arns =
+          trusted_principals.map { |id| "arn:aws:iam::#{id}:root" }
+      trusted_principals_statement =
+          policy_document["Statement"].find do |statement|
+            statement["Sid"] == "AllowGetAndPutFromTrustedAccounts"
+          end
+
+      expect(trusted_principals_statement["Effect"]).to(eq("Allow"))
+      expect(trusted_principals_statement["Resource"]).to(eq("#{bucket_arn}/*"))
+      expect(trusted_principals_statement["Action"]).to(contain_exactly(
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:PutObjectAcl"
+      ))
+      expect(trusted_principals_statement["Principal"]["AWS"])
+          .to(contain_exactly(*trusted_principal_arns))
     end
   end
 

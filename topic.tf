@@ -1,4 +1,4 @@
-data "aws_caller_identity" "current" {}
+
 
 locals {
   topic_name = "${var.topic_name_prefix}-${var.region}-${var.deployment_identifier}"
@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "infrastructure_events_topic" {
    effect = "Allow"
 
    resources = [
-     "arn:aws:sns:${var.region}:${data.aws_caller_identity.current.account_id}:${local.topic_name}"
+     "arn:aws:sns:${var.region}:${local.current_account_id}:${local.topic_name}"
    ]
 
    condition {

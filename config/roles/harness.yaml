@@ -6,5 +6,9 @@ vars:
 
   deployment_identifier: "%{hiera('deployment_identifier')}"
 
-  bucket_name_prefix: 'infrastructure-events'
-  topic_name_prefix: 'infrastructure-events'
+  bucket_name_prefix: "infrastructure-events"
+  topic_name_prefix: "infrastructure-events"
+
+  trusted_principals:
+    - "099937559257"
+    - "579878096224"

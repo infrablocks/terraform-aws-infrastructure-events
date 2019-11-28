@@ -6,4 +6,6 @@ module "infrastructure_events" {
 
   bucket_name_prefix = var.bucket_name_prefix
   topic_name_prefix = var.topic_name_prefix
+
+  trusted_principals = var.trusted_principals
 }
