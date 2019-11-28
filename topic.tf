@@ -1,5 +1,9 @@
 data "aws_caller_identity" "current" {}
 
+locals {
+  topic_name = "${var.topic_name_prefix}-${var.region}-${var.deployment_identifier}"
+}
+
 data "aws_iam_policy_document" "infrastructure_events_topic" {
  statement {
    actions = ["SNS:Publish"]
@@ -7,12 +11,12 @@ data "aws_iam_policy_document" "infrastructure_events_topic" {
    effect = "Allow"
 
    resources = [
-     "arn:aws:sns:${var.region}:${data.aws_caller_identity.current.account_id}:${var.topic_name_prefix}-${var.region}-${var.deployment_identifier}"
+     "arn:aws:sns:${var.region}:${data.aws_caller_identity.current.account_id}:${local.topic_name}"
    ]
 
    condition {
      test = "ArnLike"
-     values = ["arn:aws:s3:::${var.bucket_name_prefix}-${var.region}-${var.deployment_identifier}"]
+     values = ["arn:aws:s3:::${local.bucket_name}"]
      variable = "aws:SourceArn"
    }
 
@@ -24,8 +28,8 @@ data "aws_iam_policy_document" "infrastructure_events_topic" {
 }
 
 resource "aws_sns_topic" "infrastructure_events" {
-  name = "${var.topic_name_prefix}-${var.region}-${var.deployment_identifier}"
-  display_name = "${var.topic_name_prefix}-${var.region}-${var.deployment_identifier}"
+  name = local.topic_name
+  display_name = local.topic_name
 }
 
 resource "aws_sns_topic_policy" "infrastructure_events" {

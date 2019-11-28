@@ -1,9 +1,13 @@
+locals {
+  bucket_name = "${var.bucket_name_prefix}-${var.region}-${var.deployment_identifier}"
+}
+
 resource "aws_s3_bucket" "infrastructure_events" {
-  bucket = "${var.bucket_name_prefix}-${var.region}-${var.deployment_identifier}"
+  bucket = local.bucket_name
   region = var.region
 
   tags = {
-    Name = "${var.bucket_name_prefix}-${var.region}-${var.deployment_identifier}"
+    Name = local.bucket_name
     Component = "common"
     DeploymentIdentifier = var.deployment_identifier
   }
