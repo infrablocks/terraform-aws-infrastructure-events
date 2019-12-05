@@ -69,9 +69,10 @@ describe 'S3 Bucket' do
       expect(trusted_principals_statement["Action"]).to(contain_exactly(
           "s3:GetObject",
           "s3:PutObject",
+          "s3:DeleteObject",
           "s3:PutObjectAcl",
           "s3:GetObjectTagging",
-          "s3:PutObjectTagging",
+          "s3:PutObjectTagging"
       ))
       expect(trusted_principals_statement["Principal"]["AWS"])
           .to(contain_exactly(*trusted_principal_arns))
