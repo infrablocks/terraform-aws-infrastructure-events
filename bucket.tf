@@ -35,9 +35,18 @@ data "aws_iam_policy_document" "infrastructure_events" {
       "s3:GetObject",
       "s3:PutObject",
       "s3:DeleteObject",
+      "s3:GetObjectVersion",
+      "s3:DeleteObjectVersion",
+      "s3:GetObjectAcl",
       "s3:PutObjectAcl",
+      "s3:GetObjectVersionAcl",
+      "s3:PutObjectVersionAcl",
       "s3:GetObjectTagging",
-      "s3:PutObjectTagging"
+      "s3:PutObjectTagging",
+      "s3:DeleteObjectTagging",
+      "s3:GetObjectVersionTagging",
+      "s3:PutObjectVersionTagging",
+      "s3:DeleteObjectVersionTagging"
     ]
 
     principals {
