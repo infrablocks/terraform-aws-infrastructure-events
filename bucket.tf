@@ -58,7 +58,6 @@ data "aws_iam_policy_document" "infrastructure_events" {
 
 resource "aws_s3_bucket" "infrastructure_events" {
   bucket = local.bucket_name
-  region = var.region
 
   policy = data.aws_iam_policy_document.infrastructure_events.json
 
