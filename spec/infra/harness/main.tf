@@ -1,5 +1,6 @@
 module "infrastructure_events" {
-  source = "../../../../"
+  # This makes absolutely no sense. I think there's a bug in terraform.
+  source = "./../../../../../../../"
 
   region = var.region
   deployment_identifier = var.deployment_identifier
