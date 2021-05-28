@@ -26,6 +26,9 @@ module "infrastructure-events" {
 }
 ```
 
+See the 
+[Terraform registry entry](https://registry.terraform.io/modules/infrablocks/infrastructure-events/aws/latest) 
+for more details.
 
 ### Inputs
 
@@ -44,6 +47,10 @@ module "infrastructure-events" {
 | infrastructure_events_bucket    | The name of the bucket |
 | infrastructure_events_topic_arn | The ARN of the topic   |
 
+### Compatibility
+
+This module is compatible with Terraform versions greater than or equal to 
+Terraform 0.14.
 
 Development
 -----------
