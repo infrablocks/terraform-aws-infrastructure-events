@@ -1,5 +1,3 @@
-
-
 locals {
   topic_name = "${var.topic_name_prefix}-${var.region}-${var.deployment_identifier}"
 }

@@ -1,0 +1,14 @@
+---
+configuration_directory: "%{cwd}/examples/full"
+state_file: "%{cwd}/state/full.tfstate"
+vars:
+  region: "%{hiera('region')}"
+
+  deployment_identifier: "%{hiera('deployment_identifier')}"
+
+  bucket_name_prefix: "infrablocks-infrastructure-events"
+  topic_name_prefix: "infrablocks-infrastructure-events"
+
+  trusted_principals:
+    - "099937559257"
+    - "579878096224"
