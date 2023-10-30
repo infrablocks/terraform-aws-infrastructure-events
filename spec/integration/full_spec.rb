@@ -120,7 +120,7 @@ describe 'full' do
               's3:DeleteObjectVersionTagging'
             ))
       expect(trusted_principals_statement['Principal']['AWS'])
-        .to(contain_exactly(*trusted_principal_arns))
+        .to(match_array(trusted_principal_arns))
     end
     # rubocop:enable RSpec/MultipleExpectations
 

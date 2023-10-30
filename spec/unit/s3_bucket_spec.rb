@@ -120,7 +120,7 @@ describe 'S3 bucket' do
                     's3:DeleteObjectVersionTagging'
                   ),
                   Principal: a_hash_including(
-                    AWS: contain_exactly(*trusted_principals)
+                    AWS: match_array(trusted_principals)
                   )
                 )
               ))
